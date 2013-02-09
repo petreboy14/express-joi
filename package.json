@@ -1,0 +1,27 @@
+{
+  "name": "express-joi",
+  "version": "0.0.1",
+  "description": "An A validation middleware for express using the Joi validation suite from Eran Hammer/Walmart Labs",
+  "contributors": {
+    "name": "Peter Henning",
+    "email": "petreboy14@gmail.com"
+  },
+  "dependencies": {
+    "async": "0.2.4 ",
+    "joi": "0.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/petreboy14/express-joi.git"
+  },
+  "keywords": [
+    "express",
+    "middleware",
+    "validation",
+    "joi"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
