@@ -7,13 +7,13 @@
     "email": "petreboy14@gmail.com"
   },
   "dependencies": {
-    "async": "0.2.4 ",
     "joi": "0.0.8"
   },
   "devDependencies": {
     "express": "3.1.0",
     "mocha": "1.8.1",
-    "should": "1.2.1"
+    "should": "1.2.1",
+    "request": "2.x.x"
   },
   "repository": {
     "type": "git",

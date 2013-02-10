@@ -1,6 +1,8 @@
 var express = require('express');
-var should = require('should');
 var Joi = require('joi');
+var should = require('should');
+var request = require('request');
+
 var expressJoi = require('../index');
 
 describe('express-joi tests', function() {
@@ -42,9 +44,80 @@ describe('express-joi tests', function() {
   });
   
   describe('expressJoi.joiValidate', function() {
-    it('should be able to attach a validator to a specific route');
-    it('should pass successfully through route with correct validation');
-    it('should fail if an item does not have correct validation');
+    var app = null;
+
+    before(function(done) {
+      app = express();
+
+      app.use(express.bodyParser());
+      app.use(express.methodOverride());
+      app.use(app.router);
+      app.use(function(err, req, res, next) {
+        res.send(500, {message: err.message});
+      });
+
+      app.listen(8181, function() {
+        done();
+      });
+    });
+
+    it('should be able to attach a validator to a specific route', function() {
+      var error = null;
+
+      try {
+        var schema = {
+          limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
+          offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
+          name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+        };
+
+        app.get('/users', expressJoi.joiValidate(schema), function returnFunc(req, res) {
+          res.send(200, { hello: 'world' });
+        });
+      } catch(err) {
+        error = err;
+      }
+
+      should.not.exist(error);
+    });
+    it('should pass successfully through route with correct validation', function(done) {
+      request.get('http://localhost:8181/users?limit=5&offset=5&name=peter', function(err, res, body) {
+        if (err) {
+          done(err);
+        }
+        res.statusCode.should.equal(200);
+        should.exist(body);
+
+        try {
+          body = JSON.parse(body);
+        } catch(err) {
+          done(err);
+        }
+
+        body.should.have.property('hello');
+        body.hello.should.equal('world');
+        done();
+      });
+    });
+    it('should fail if an item does not have correct validation', function(done) {
+      request.get('http://localhost:8181/users?limit=-1&offset=5&name=peter', function(err, res, body) {
+        if (err) {
+          done(err);
+        }
+
+        res.statusCode.should.equal(500);
+
+        try {
+          body = JSON.parse(body);
+        } catch(err) {
+          done(err);
+        }
+
+        body.should.have.property('message');
+        body.message.should.equal('[ValidationError]: the value of `limit` must be larger than (or equal to) 1');
+        done();
+      });
+    });
   });
   
   describe('expressJoi.joiValidation', function() {
