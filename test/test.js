@@ -10,10 +10,6 @@ describe('express-joi tests', function() {
     it('should not be null', function() {
       should.exist(expressJoi);
     });
-    it('should contain a joiValidator function', function() {
-      should.exist(expressJoi.joiValidator);
-      expressJoi.joiValidator.should.be.an.instanceof(Function);
-    });
     it('should contain a joiValidate function', function() {
       should.exist(expressJoi.joiValidate);
       expressJoi.joiValidate.should.be.an.instanceof(Function);
@@ -45,18 +41,18 @@ describe('express-joi tests', function() {
   
   describe('expressJoi.joiValidate', function() {
     var app = null;
+    var server = null;
 
     before(function(done) {
       app = express();
-
-      app.use(express.bodyParser());
       app.use(express.methodOverride());
+      app.use(express.bodyParser());
       app.use(app.router);
       app.use(function(err, req, res, next) {
         res.send(500, {message: err.message});
       });
 
-      app.listen(8181, function() {
+      server = app.listen(8181, function() {
         done();
       });
     });
@@ -81,7 +77,7 @@ describe('express-joi tests', function() {
       should.not.exist(error);
     });
     it('should pass successfully through route with correct validation', function(done) {
-      request.get('http://localhost:8181/users?limit=5&offset=5&name=peter', function(err, res, body) {
+      request.get('http://localhost:8181/users?limit=5&offset=5&name=tom', function(err, res, body) {
         if (err) {
           done(err);
         }
@@ -100,7 +96,7 @@ describe('express-joi tests', function() {
       });
     });
     it('should fail if an item does not have correct validation', function(done) {
-      request.get('http://localhost:8181/users?limit=-1&offset=5&name=peter', function(err, res, body) {
+      request.get('http://localhost:8181/users?limit=-1&offset=5&name=tom', function(err, res, body) {
         if (err) {
           done(err);
         }
@@ -118,14 +114,9 @@ describe('express-joi tests', function() {
         done();
       });
     });
-  });
-  
-  describe('expressJoi.joiValidation', function() {
-    it('should be able to create am object of validations for the middleware function');
-    it('should be able to attach joiValidation as a middleware for express');
-    it('should be able to validate a correct GET request');
-    it('should be able to validate a correct PUT request');
-    it('should be able to validate a correct POST request');
-    it('should be able to validate a correct DELETE request');
+
+    after(function() {
+      server.close();
+    });
   });
 });
