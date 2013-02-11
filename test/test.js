@@ -67,7 +67,7 @@ describe('express-joi tests', function() {
           name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
         };
 
-        app.get('/users', expressJoi.joiValidate(schema), function returnFunc(req, res) {
+        app.get('/users', expressJoi.joiValidate(schema), function returnFunc(req, res) { 
           res.send(200, { hello: 'world' });
         });
       } catch(err) {
