@@ -115,6 +115,28 @@ describe('express-joi tests', function() {
       });
     });
 
+    it('should be able to pass strict: false option and still pass validation with unspecified parameter', function(done) {
+      var schema = {
+        limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
+        offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
+        name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+      };
+
+      app.get('/foos', expressJoi.joiValidate(schema, { strict: false }), function returnFunc(req, res) {
+        var items = req.items;
+        items.should.have.keys('foo', 'offset', 'name');
+        items.foo.should.equal('bar');
+        res.send(200, { hello: 'world' });
+      });
+      request.get('http://localhost:8181/foos?foo=bar&offset=5&name=tom', function(err, res, body) {
+        if (err) {
+          done(err);
+        }
+        res.statusCode.should.equal(200);
+        done();
+      });
+    });
+
     after(function() {
       server.close();
     });
