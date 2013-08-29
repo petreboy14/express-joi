@@ -43,6 +43,16 @@ app.listen(8080);
 ```
 If a validation error occurs it will either be handled by your express error handling middleware or thrown.
 
+## Strict mode
+
+joiValidate takes a second optional object which will accept a strict key of true or false. When true, Joi will validate
+every parameter in req.params, req.body, and req.query. If false, Joi will only validate parameters specified in the 
+given validation object and pass any others directly through.
+
+```
+app.get('/users', expressJoi.joiValidate(schema, { strict: false }, ...);
+```
+
 ## Consolidated Parameters
 
 Upon successful validation express-joi will add an items object to req with all parameters from req.body, req.params, and req.query.
