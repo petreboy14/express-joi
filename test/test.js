@@ -110,7 +110,7 @@ describe('express-joi tests', function() {
         }
 
         body.should.have.property('message');
-        body.message.should.equal('the value of limit must be larger than (or equal to) -1');
+        body.message.should.equal('the value of limit must be larger than (or equal to) 1');
         done();
       });
     });
