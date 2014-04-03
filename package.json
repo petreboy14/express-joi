@@ -14,7 +14,7 @@
     "mocha": "1.8.1",
     "should": "1.2.1",
     "request": "2.x.x",
-    "precommit-hook": "^0.3.10"
+    "precommit-hook": "*"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.6"
   },
   "scripts": {
     "test": "mocha -R spec"
