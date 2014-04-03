@@ -27,11 +27,11 @@ describe('express-joi tests', function () {
       var schema = null;
       try {
         schema = {
-          username: expressJoi.Joi.types.String().alphanum().min(3).max(30).with('birthyear').required(),
-          password: expressJoi.Joi.types.String().regex(/[a-zA-Z0-9]{3,30}/).without('access_token'),
-          access_token: expressJoi.Joi.types.String(),
-          birthyear: expressJoi.Joi.types.Number().min(1850).max(2012),
-          email: expressJoi.Joi.types.String().email()
+          username: expressJoi.Joi.string().alphanum().min(3).max(30).with('birthyear').required(),
+          password: expressJoi.Joi.string().regex(/[a-zA-Z0-9]{3,30}/).without('access_token'),
+          access_token: expressJoi.Joi.string(),
+          birthyear: expressJoi.Joi.number().min(1850).max(2012),
+          email: expressJoi.Joi.string().email()
         };
       } catch (err) {
         schemaError = err;
@@ -64,9 +64,9 @@ describe('express-joi tests', function () {
 
       try {
         var schema = {
-          limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
-          offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
-          name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+          limit: expressJoi.Joi.number().integer().min(1).max(25),
+          offset: expressJoi.Joi.number().integer().min(0).max(25),
+          name: expressJoi.Joi.string().alphanum().min(2).max(25)
         };
 
         app.get('/users', expressJoi.joiValidate(schema), function returnFunc(req, res) {
@@ -112,16 +112,16 @@ describe('express-joi tests', function () {
         }
 
         body.should.have.property('message');
-        body.message.should.equal('the value of limit must be larger than (or equal to) 1');
+        body.message.should.equal('the value of limit must be larger than or equal to 1');
         done();
       });
     });
 
     it('should be able to pass strict: false option and still pass validation with unspecified parameter', function (done) {
       var schema = {
-        limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
-        offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
-        name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+        limit: expressJoi.Joi.number().integer().min(1).max(25),
+        offset: expressJoi.Joi.number().integer().min(0).max(25),
+        name: expressJoi.Joi.string().alphanum().min(2).max(25)
       };
 
       app.get('/foos', expressJoi.joiValidate(schema, { strict: false }), function returnFunc(req, res) {
