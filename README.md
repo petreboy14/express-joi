@@ -25,14 +25,14 @@ app.use(errorHandler);
 
 // Use the Joi object to create a few schemas for your routes. 
 var getUsersSchema = {
-  limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
-  offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
-  name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+  limit: expressJoi.Joi.number().integer().min(1).max(25),
+  offset: expressJoi.Joi.number().integer().min(0).max(25),
+  name: expressJoi.Joi.string().alphanum().min(2).max(25)
 };
 
 var updateUserSchema = {
-  userId: Joi.types.String().alphanum().min(10).max(20),
-  name: Joi.types.String().min(3).max(50)
+  userId: Joi.string().alphanum().min(10).max(20),
+  name: Joi.string().min(3).max(50)
 };
 
 // Attach the validator to the route definitions
