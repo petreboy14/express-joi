@@ -139,6 +139,39 @@ describe('express-joi tests', function () {
       });
     });
 
+    it('should pass successfully with prototype-less objects', function (done) {
+      var schema = { name: expressJoi.Joi.string() };
+
+      function fakeBody(req, res, next) {
+        req.body = Object.create(null);
+        req.body.name = 'Linus';
+        next();
+      }
+
+      app.get('/prototypeless', fakeBody, expressJoi.joiValidate(schema), function returnFunc(req, res) {
+        res.send(200, { hello: 'world' });
+      });
+
+      request.get('http://localhost:8181/prototypeless', function (err, res, body) {
+        if (err) {
+          done(err);
+        }
+
+        res.statusCode.should.equal(200);
+        should.exist(body);
+
+        try {
+          body = JSON.parse(body);
+        } catch (err) {
+          done(err);
+        }
+
+        body.should.have.property('hello');
+        body.hello.should.equal('world');
+        done();
+      });
+    });
+
     after(function () {
       server.close();
     });
