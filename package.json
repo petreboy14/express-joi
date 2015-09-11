@@ -31,6 +31,13 @@
     "node": ">=0.6"
   },
   "scripts": {
-    "test": "mocha -R spec"
-  }
+    "test": "mocha -R spec",
+    "lint": "jshint .",
+    "validate": "npm ls"
+  },
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ]
 }

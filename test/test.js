@@ -103,7 +103,7 @@ describe('express-joi tests', function () {
           done(err);
         }
 
-        res.statusCode.should.equal(500);
+        res.statusCode.should.equal(400);
 
         try {
           body = JSON.parse(body);
