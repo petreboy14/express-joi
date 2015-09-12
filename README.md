@@ -25,9 +25,9 @@ app.use(errorHandler);
 
 // Use the Joi object to create a few schemas for your routes. 
 var getUsersSchema = {
-  limit: expressJoi.Joi.types.Number().integer().min(1).max(25),
-  offset: expressJoi.Joi.types.Number().integer().min(0).max(25),
-  name: expressJoi.Joi.types.String().alphanum().min(2).max(25)
+  limit: Joi.types.Number().integer().min(1).max(25),
+  offset: Joi.types.Number().integer().min(0).max(25),
+  name: Joi.types.String().alphanum().min(2).max(25)
 };
 
 var updateUserSchema = {
