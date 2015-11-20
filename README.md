@@ -39,6 +39,18 @@ var updateUserSchema = {
 app.get('/users', expressJoi.joiValidate(getUsersSchema), handleUsers);
 app.put('/users/:userId', expressJoi.joiValidate(updateUserSchema), handleUpdateUser);
 
+// Add an error middleware that will handle validation errors
+function joiErrorHandler(err, req, res, next) {
+  if (e instanceof ValidationError) {
+    res.status(400);
+    // use err.details for better dispatch, see https://github.com/hapijs/joi/blob/master/API.md#errors
+    res.end(JSON.stringify({ message: formatMessage(err.message) }));
+  } else {
+    next(err);
+  }
+}
+app.use(joiErrorHandler);
+
 app.listen(8080);
 ```
 If a validation error occurs it will either be handled by your express error handling middleware or thrown.
