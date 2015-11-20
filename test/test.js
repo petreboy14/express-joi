@@ -53,8 +53,8 @@ describe('express-joi tests', function () {
       app.use(app.router);
       app.use(function (err, req, res, next) {
         console.log(err);
-        if(err && err.error && err.error.name === 'ValidationError'){
-          res.send(400, {message: err.error.message});
+        if(err && err.name === 'ValidationError'){
+          res.send(400, {message: err.message});
         } else {
           next(err);
         }
