@@ -51,7 +51,7 @@ describe('express-joi tests', function () {
       app.use(express.bodyParser());
       app.use(app.router);
       app.use(function (err, req, res, next) {
-        res.send(500, {message: err.message});
+        res.send(400, {message: err.message});
       });
 
       server = app.listen(8181, function () {
