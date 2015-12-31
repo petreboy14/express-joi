@@ -1,7 +1,7 @@
 express-joi
 ===========
 
-[![Build Status](https://travis-ci.org/petreboy14/express-joi.png)](https://travis-ci.org/petreboy14/express-joi)
+[![Circle CI](https://circleci.com/gh/parkan/express-joi.svg?style=svg)](https://circleci.com/gh/parkan/express-joi)
 
 
 A validation middleware for express using the [Joi validation](https://github.com/spumko/joi) suite from Eran Hammer/Walmart Labs.
@@ -38,6 +38,18 @@ var updateUserSchema = {
 // Attach the validator to the route definitions
 app.get('/users', expressJoi.joiValidate(getUsersSchema), handleUsers);
 app.put('/users/:userId', expressJoi.joiValidate(updateUserSchema), handleUpdateUser);
+
+// Add an error middleware that will handle validation errors
+function joiErrorHandler(err, req, res, next) {
+  if (e && e.name === 'ValidationError') {
+    res.status(400);
+    // use err.details for better dispatch, see https://github.com/hapijs/joi/blob/master/API.md#errors
+    res.end(JSON.stringify({ message: formatMessage(e.message) }));
+  } else {
+    next(e);
+  }
+}
+app.use(joiErrorHandler);
 
 app.listen(8080);
 ```

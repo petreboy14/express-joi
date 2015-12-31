@@ -26,14 +26,15 @@ describe('express-joi tests', function () {
       var schemaError = null;
       var schema = null;
       try {
-        schema = {
-          username: expressJoi.Joi.string().alphanum().min(3).max(30).with('birthyear').required(),
-          password: expressJoi.Joi.string().regex(/[a-zA-Z0-9]{3,30}/).without('access_token'),
+        schema = Joi.object().keys({
+          username: expressJoi.Joi.string().alphanum().min(3).max(30),
+          password: expressJoi.Joi.string().regex(/[a-zA-Z0-9]{3,30}/),
           access_token: expressJoi.Joi.string(),
           birthyear: expressJoi.Joi.number().min(1850).max(2012),
           email: expressJoi.Joi.string().email()
-        };
+        }).with('username', 'birthyear').without('password', 'access_token');
       } catch (err) {
+        console.log(err);
         schemaError = err;
       }
       should.exist(schema);
@@ -51,7 +52,12 @@ describe('express-joi tests', function () {
       app.use(express.bodyParser());
       app.use(app.router);
       app.use(function (err, req, res, next) {
-        res.send(500, {message: err.message});
+        console.log(err);
+        if(err && err.name === 'ValidationError'){
+          res.send(400, {message: err.message});
+        } else {
+          next(err);
+        }
       });
 
       server = app.listen(8181, function () {
@@ -97,6 +103,7 @@ describe('express-joi tests', function () {
         done();
       });
     });
+
     it('should fail if an item does not have correct validation', function (done) {
       request.get('http://localhost:8181/users?limit=-1&offset=5&name=tom', function (err, res, body) {
         if (err) {
@@ -112,7 +119,7 @@ describe('express-joi tests', function () {
         }
 
         body.should.have.property('message');
-        body.message.should.equal('the value of limit must be larger than or equal to 1');
+        body.message.should.equal('child "limit" fails because ["limit" must be larger than or equal to 1]');
         done();
       });
     });
